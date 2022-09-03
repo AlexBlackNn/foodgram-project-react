@@ -20,20 +20,23 @@ class MyUserManager(UserManager):
 class User(AbstractUser):
     # пользовательские роли
     USER = 'user'
-    MODERATOR = 'moderator'
+    AUTHORIZED = 'authorized'
     ADMIN = 'admin'
     ROLES = (
         (USER, 'user'),
-        (MODERATOR, 'moderator'),
+        (AUTHORIZED, 'authorized'),
         (ADMIN, 'admin')
     )
-    bio = models.TextField(verbose_name='Биография', blank=True)
     role = models.CharField(
         verbose_name='Пользовательская роль',
         max_length=200,
         choices=ROLES,
         default='user'
     )
+    email = models.EmailField(unique=True, max_length=255)
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
     objects = MyUserManager()
 
     @property
@@ -46,6 +49,9 @@ class User(AbstractUser):
 
     class Meta:
         ordering = ('id',)
+
+
+# Create your models here.
 
 
 class Tag(models.Model):
