@@ -4,6 +4,8 @@ from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
+from django.contrib.auth.hashers import make_password, check_password
+
 from rest_framework import generics, status
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -52,10 +54,15 @@ class APIToken(generics.CreateAPIView):
         # Берем пользователя, который только, что был создан
         email = serializer.data['email']
         user = get_object_or_404(User, email=email)
-
-        token = AccessToken.for_user(user)
+        if check_password(serializer.data['password'], user.password):
+            token = AccessToken.for_user(user)
+            return Response(
+                {'auth_token': str(token)},
+                status=status.HTTP_200_OK
+            )
         return Response(
-            {'auth_token': str(token)}, status=status.HTTP_200_OK
+            {'auth_token': 'Wrong password!'},
+            status=status.HTTP_401_UNAUTHORIZED
         )
 
 
