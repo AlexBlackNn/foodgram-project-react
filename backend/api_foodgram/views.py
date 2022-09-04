@@ -17,12 +17,13 @@ from .models import User, Tag
 from .serializers import TagSerializer, UserSerializer, TokenSerializer
 
 
-class APISignUp(generics.CreateAPIView):
+class APISignUp(generics.ListCreateAPIView):
     """Регистрация пользователя."""
 
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
     # регестрация доступна всем
     permission_classes = (AllowAny,)
-
     def post(self, request):
         """Пользователь отправил email и usernameна эндпоинт .../signup/."""
         serializer = UserSerializer(data=request.data)
@@ -64,6 +65,27 @@ class APIToken(generics.CreateAPIView):
             {'auth_token': 'Wrong password!'},
             status=status.HTTP_401_UNAUTHORIZED
         )
+
+
+class APIUser(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    # permission_classes = (IsAdmin,)
+    permission_classes = (AllowAny,)
+    lookup_field = 'username'
+    search_fields = ('username',)
+
+    @action(
+        detail=False,
+        methods=['get'],
+        permission_classes=[IsAuthenticated],
+        url_path='me'
+    )
+    def me(self, request, *args, **kwargs):
+        user = request.user
+        if request.method == 'GET':
+            serializer = self.get_serializer(user)
+            return Response(serializer.data)
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
