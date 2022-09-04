@@ -49,6 +49,18 @@ class TokenSerializer(serializers.ModelSerializer):
         )
 
 
+class PasswordSerializer(serializers.ModelSerializer):
+    """Сериализатор для пользователей со статусом admin."""
+
+    new_password = serializers.CharField()
+    current_password = serializers.CharField()
+
+    class Meta:
+        model = User
+        fields = (
+             'new_password', 'current_password'
+        )
+
 class TagSerializer(serializers.ModelSerializer):
     """Сериализатор для tags."""
 

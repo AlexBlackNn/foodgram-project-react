@@ -14,32 +14,12 @@ from rest_framework import viewsets
 from rest_framework_simplejwt.tokens import AccessToken
 
 from .models import User, Tag
-from .serializers import TagSerializer, UserSerializer, TokenSerializer
-
-
-class APISignUp(generics.ListCreateAPIView):
-    """Регистрация пользователя."""
-
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    # регестрация доступна всем
-    permission_classes = (AllowAny,)
-    def post(self, request):
-        """Пользователь отправил email и usernameна эндпоинт .../signup/."""
-        serializer = UserSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save(role='user')
-        # Берем пользователя, который только, что был создан
-        username = serializer.data['username']
-        user = get_object_or_404(User, username=username)
-
-        return Response(
-            {'email': serializer.data['email'],
-             'username': serializer.data['username'],
-             'first_name': serializer.data['first_name'],
-             'last_name': serializer.data['last_name']},
-            status=status.HTTP_200_OK
-        )
+from .serializers import (
+    TagSerializer,
+    UserSerializer,
+    TokenSerializer,
+    PasswordSerializer
+)
 
 
 class APIToken(generics.CreateAPIView):
@@ -72,8 +52,6 @@ class APIUser(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     # permission_classes = (IsAdmin,)
     permission_classes = (AllowAny,)
-    lookup_field = 'username'
-    search_fields = ('username',)
 
     @action(
         detail=False,
@@ -87,7 +65,31 @@ class APIUser(viewsets.ModelViewSet):
             serializer = self.get_serializer(user)
             return Response(serializer.data)
 
-
+    @action(
+        detail=False,
+        methods=['post'],
+        permission_classes=[IsAuthenticated],
+        url_path='set_password'
+    )
+    def set_password(self, request, *args, **kwargs):
+        user = request.user
+        if request.method == 'POST':
+            serializer = PasswordSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            # Берем пользователя, который только, что был создан
+            new_password = serializer.data['new_password']
+            current_password = serializer.data['current_password']
+            if check_password(current_password, user.password):
+                user.set_password(new_password)
+                user.save()
+                return Response(
+                    serializer.data,
+                    status=status.HTTP_200_OK
+                )
+            return Response(
+                {'auth_token': 'Wrong password!'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
