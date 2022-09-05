@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'api_foodgram.apps.ApiFoodgramConfig',
+    'users.apps.UsersConfig'
 ]
 
 MIDDLEWARE = [
@@ -105,7 +106,10 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 ######
-AUTH_USER_MODEL = 'api_foodgram.User'
+AUTH_USER_MODEL = 'users.User'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
