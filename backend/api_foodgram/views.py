@@ -22,7 +22,7 @@ from .serializers import (
 )
 
 
-class APIToken(generics.CreateAPIView):
+class APICreateToken(generics.CreateAPIView):
     """Регистрация пользователя."""
 
     # регестрация доступна всем
@@ -47,7 +47,22 @@ class APIToken(generics.CreateAPIView):
         )
 
 
-class APIUser(viewsets.ModelViewSet):
+class APIDestroyToken(generics.DestroyAPIView):
+    """Регистрация пользователя."""
+
+    # регестрация доступна всем
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        """Пользователь отправил email и password на  эндпоинт .../login/."""
+        user = request.user
+        user.delete()
+        return Response(
+            status=status.HTTP_204_NO_CONTENT
+        )
+
+
+class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     # permission_classes = (IsAdmin,)
@@ -90,6 +105,8 @@ class APIUser(viewsets.ModelViewSet):
                 {'auth_token': 'Wrong password!'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
+
+
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
