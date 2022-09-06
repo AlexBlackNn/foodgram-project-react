@@ -53,23 +53,4 @@ class PasswordSerializer(serializers.ModelSerializer):
         )
 
 
-class TokenSerializer(serializers.ModelSerializer):
-    """Сериализатор для пользователей со статусом admin."""
 
-    email = serializers.EmailField()
-    password = serializers.CharField()
-
-    class Meta:
-        model = User
-        fields = (
-            'password', 'email'
-        )
-
-# class FollowSerializer(serializers.ModelSerializer):
-#     """Сериализатор для пользователей со статусом admin."""
-#
-#     class Meta:
-#         model = Follow
-#         fields = (
-#             'id'
-#         )
