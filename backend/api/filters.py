@@ -2,8 +2,8 @@ from django_filters import rest_framework as filters
 
 from rest_framework.filters import SearchFilter
 
-from .models import Recipe, Tag
-from ..users.models import User
+from recipes.models import Recipe, Tag
+from users.models import User
 
 class RecipeFilterSet(filters.FilterSet):
     """
@@ -33,7 +33,7 @@ class RecipeFilterSet(filters.FilterSet):
 
     def filter_is_in_shopping_cart(self, queryset, name, value):
         if value and not self.request.user.is_anonymous:
-            return queryset.filter(shopping_cart__user=self.request.user)
+            return queryset.filter(shopping_carts__user=self.request.user)
         return queryset
 
     class Meta:

@@ -40,7 +40,6 @@ class UserViewSet(viewsets.ModelViewSet):
         if request.method == 'POST':
             serializer = PasswordSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
-            # Берем пользователя, который только, что был создан
             new_password = serializer.data['new_password']
             current_password = serializer.data['current_password']
             if check_password(current_password, user.password):

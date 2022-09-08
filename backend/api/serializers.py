@@ -3,19 +3,18 @@ import base64
 from django.shortcuts import get_object_or_404
 from rest_framework.fields import SerializerMethodField, ListField
 from rest_framework import serializers
+from rest_framework.validators import UniqueTogetherValidator
 
-
-from .models import (
+from recipes.models import (
     Tag,
     Recipe,
     Favorite,
-    GroceryBasket,
     Ingredient,
     IngredientQuantity,
-    TagRecipe
+    TagRecipe, ShoppingCart
 )
 from django.core.files.base import ContentFile
-from ..users.serializers import UserSerializer
+from users.serializers import UserSerializer
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -90,9 +89,9 @@ class RecipeReadSerializer(serializers.ModelSerializer):
             'name',
             'image',
             'text',
-            'cooking_time',
             'is_favorited',
-            'is_in_shopping_cart'
+            'is_in_shopping_cart',
+            'cooking_time',
         )
 
     def get_is_favorited(self, obj):
@@ -109,7 +108,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         if request is None or request.user.is_anonymous:
             return False
-        if GroceryBasket.objects.filter(
+        if ShoppingCart.objects.filter(
                 user=request.user,
                 recipe__id=obj.id).exists():
             return True
@@ -196,6 +195,22 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
                 })
         return data
 
+
+class FavoriteSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField()
+    name = serializers.CharField()
+    cooking_time = serializers.IntegerField()
+    image = Base64ImageField(max_length=None, use_url=False,)
+
+    class Meta:
+        model = Favorite
+        fields = ('id', 'name', 'image', 'cooking_time')
+        validators = (
+            UniqueTogetherValidator(
+                queryset=Favorite.objects.all(),
+                fields=('user', 'recipe')
+            )
+        )
 
 
 
