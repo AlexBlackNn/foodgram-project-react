@@ -28,11 +28,11 @@ class Tag(models.Model):
         return self.name
 
 
-class Ingredients(models.Model):
-    """Модель для установки Тэгов."""
+class Ingredient(models.Model):
+    """Модель для ингридиентов."""
 
     name = models.CharField(
-        'Название',
+        'Название ингридиента',
         max_length=200,
     )
     measurement_unit = models.CharField(
@@ -68,8 +68,9 @@ class Recipe(models.Model):
 
     tags = models.ManyToManyField(
         Tag,
+        through='TagRecipe',
         verbose_name='Теги',
-        related_name='recipes',
+        related_name='tags',
     )
 
     image = models.ImageField(
@@ -90,7 +91,7 @@ class Recipe(models.Model):
     )
 
     cooking_time = models.PositiveSmallIntegerField(
-        'Время готовки',
+        'Время приготовления блюда',
     )
 
     pub_date = models.DateTimeField(
@@ -106,6 +107,20 @@ class Recipe(models.Model):
     def __str__(self):
         return self.name
 
+class TagRecipe(models.Model):
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE,
+                            verbose_name='Теги',
+                            help_text='Выберите теги рецепта')
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
+                               verbose_name='Рецепт',
+                               help_text='Выберите рецепт')
+
+    class Meta:
+        verbose_name = 'Теги рецепта'
+        verbose_name_plural = 'Теги рецепта'
+
+    def __str__(self):
+        return f'{self.tag} {self.recipe}
 
 class IngredientQuantity(models.Model):
     recipe = models.ForeignKey(
@@ -120,7 +135,7 @@ class IngredientQuantity(models.Model):
         related_name='quantities',
         verbose_name='Ингредиент'
     )
-    quantity = models.IntegerField(
+    quantity = models.PositiveIntegerField(
         'Количество',
     )
 
@@ -145,12 +160,12 @@ class Favorite(models.Model):
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
-        related_name='favorites',
+        related_name='favorites_recipe',
         verbose_name='Рецепт',
     )
 
 
-class ShoppingCart(models.Model):
+class GroceryBasket(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
