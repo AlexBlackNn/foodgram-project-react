@@ -23,7 +23,7 @@ class Tag(models.Model):
     class Meta:
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
-
+        ordering = ['name']
     def __str__(self):
         return self.name
 
@@ -43,6 +43,7 @@ class Ingredient(models.Model):
     class Meta:
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
+        ordering = ['name']
         constraints = [
             models.UniqueConstraint(fields=['name', 'measurement_unit'],
                                     name='unique ingredient')
@@ -135,13 +136,14 @@ class IngredientQuantity(models.Model):
         related_name='quantities',
         verbose_name='Ингредиент'
     )
-    quantity = models.PositiveIntegerField(
+    amount = models.PositiveIntegerField(
         'Количество',
     )
 
     class Meta:
         verbose_name = 'Количество '
         verbose_name_plural = 'Количество '
+        ordering = ['-id']
         constraints = (
             models.UniqueConstraint(
                 fields=('ingredient', 'recipe',),
@@ -164,7 +166,7 @@ class Favorite(models.Model):
         verbose_name='Рецепт',
     )
 
-
+# TODO UniqueConstraint does not work!!!
 class ShoppingCart(models.Model):
     user = models.ForeignKey(
         User,
@@ -177,4 +179,10 @@ class ShoppingCart(models.Model):
         on_delete=models.CASCADE,
         related_name='shopping_carts',
         verbose_name='Рецепт',
+    )
+    constraints = (
+        models.UniqueConstraint(
+            fields=('user', 'recipe',),
+            name='unique user recipe',
+        ),
     )

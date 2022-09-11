@@ -14,7 +14,7 @@ from recipes.models import (
     TagRecipe, ShoppingCart
 )
 from django.core.files.base import ContentFile
-from users.serializers import UserSerializer
+from users.serializers import UserSerializer, UserDetailSerializer
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -23,7 +23,6 @@ class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ('id', 'name', 'color', 'slug')
-
 
 
 class Base64ImageField(serializers.ImageField):
@@ -44,6 +43,7 @@ class IngredientAmountPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = IngredientQuantity
         fields = ('id', 'amount')
+
 
 class IngredientAmountGetSerializer(serializers.ModelSerializer):
     id = serializers.SerializerMethodField()
@@ -66,7 +66,7 @@ class IngredientAmountGetSerializer(serializers.ModelSerializer):
 
 class RecipeReadSerializer(serializers.ModelSerializer):
     tags = TagSerializer(read_only=True, many=True)
-    author = UserSerializer()
+    author = UserDetailSerializer()
     ingredients = IngredientAmountGetSerializer(
         read_only=True,
         many=True,
@@ -116,7 +116,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
 
 
 class RecipeWriteSerializer(serializers.ModelSerializer):
-    author = UserSerializer(read_only=True)
+    author = UserDetailSerializer(read_only=True)
     tags = serializers.PrimaryKeyRelatedField(
         queryset=Tag.objects.all(),
         many=True
@@ -200,7 +200,7 @@ class FavoriteSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField()
     name = serializers.CharField()
     cooking_time = serializers.IntegerField()
-    image = Base64ImageField(max_length=None, use_url=False,)
+    image = Base64ImageField(max_length=None, use_url=False, )
 
     class Meta:
         model = Favorite
@@ -213,4 +213,52 @@ class FavoriteSerializer(serializers.ModelSerializer):
         )
 
 
+class BaseIngredientSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ingredient
+        fields = ('id', 'name', 'measurement_unit')
 
+
+class IngredientQuantityReadSerializer(serializers.ModelSerializer):
+    id = serializers.SerializerMethodField()
+    name = serializers.SerializerMethodField()
+    measurement_unit = serializers.SerializerMethodField()
+
+    class Meta:
+        model = IngredientQuantity
+        fields = ('id', "name", "measurement_unit", "amount")
+
+    def get_id(self, obj):
+        return obj.ingredient.id
+
+    def get_name(self, obj):
+        return obj.ingredient.name
+
+    def get_measurement_unit(self, obj):
+        return obj.ingredient.measurement_unit
+
+
+class IngredientQuantityWriteSerializer(serializers.ModelSerializer):
+    id = serializers.PrimaryKeyRelatedField(
+        queryset=Ingredient.objects.all()
+    )
+
+    class Meta:
+        model = IngredientQuantity
+        fields = ('id', 'amount')
+
+class CartSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField()
+    name = serializers.CharField()
+    cooking_time = serializers.IntegerField()
+    image = Base64ImageField(max_length=None, use_url=False,)
+
+    class Meta:
+        model = ShoppingCart
+        fields = ('id', 'name', 'image', 'cooking_time')
+        validators = (
+            UniqueTogetherValidator(
+                queryset=ShoppingCart.objects.all(),
+                fields=('user', 'recipe')
+            )
+        )

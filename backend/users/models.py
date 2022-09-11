@@ -20,11 +20,11 @@ class MyUserManager(UserManager):
 class User(AbstractUser):
     # пользовательские роли
     USER = 'user'
-    AUTHORIZED = 'authorized'
+    SUBSCRIBED = 'subscribed'
     ADMIN = 'admin'
     ROLES = (
         (USER, 'user'),
-        (AUTHORIZED, 'authorized'),
+        (SUBSCRIBED, 'subscribed'),
         (ADMIN, 'admin')
     )
     role = models.CharField(
@@ -41,8 +41,8 @@ class User(AbstractUser):
         return self.role == self.ADMIN
 
     @property
-    def is_authorized(self):
-        return self.role == self.AUTHORIZED
+    def is_subscribed(self):
+        return self.role == self.SUBSCRIBED
 
     class Meta:
         ordering = ('id',)

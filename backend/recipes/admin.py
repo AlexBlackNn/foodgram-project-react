@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import (Favorite, Recipe, Ingredient,
-                      IngredientQuantity)
+                     IngredientQuantity, Tag, ShoppingCart)
 
 
 class IngredientAdmin(admin.ModelAdmin):
@@ -17,6 +17,21 @@ class IngredientAdmin(admin.ModelAdmin):
 class IngredientsInline(admin.TabularInline):
     model = Ingredient
 
+
+class TagAdmin(admin.ModelAdmin):
+    model = Tag
+
+
+admin.site.register(Tag, TagAdmin)
+
+class ShoppingCartAdmin(admin.ModelAdmin):
+    model = ShoppingCart
+    list_display = (
+        'user',
+        'recipe',
+    )
+
+admin.site.register(ShoppingCart, ShoppingCartAdmin)
 
 class RecipeAdmin(admin.ModelAdmin):
     list_display = (
@@ -36,6 +51,7 @@ class RecipeAdmin(admin.ModelAdmin):
 
     def ingredients(self, obj):
         return list(obj.ingredients.all())
+
     ingredients.short_description = 'Ингредиенты'
 
 

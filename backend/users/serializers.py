@@ -40,6 +40,29 @@ class UserSerializer(serializers.ModelSerializer):
         )
 
 
+class UserDetailSerializer(serializers.ModelSerializer):
+    is_subscribed = serializers.SerializerMethodField(
+        method_name='is_subscribed')
+
+    class Meta:
+        model = User
+        fields = (
+            'email',
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            'is_subscribed'
+        )
+
+    def is_subscribed(self, obj):
+        user = self.context['request'].user
+        return (
+            user.is_authenticated
+            and obj.subscribing.filter(user=user).exists()
+        )
+
+
 class PasswordSerializer(serializers.ModelSerializer):
     """Сериализатор для пользователей со статусом admin."""
 
