@@ -80,9 +80,9 @@ class FavoriteView(APIView):
 
     def delete(self, request, recipe_id):
         user = request.user
-        object = get_object_or_404(
+        favorite = get_object_or_404(
             Favorite, user=user, recipe__id=recipe_id)
-        object.delete()
+        favorite.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
