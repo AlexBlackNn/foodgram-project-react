@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.db import models
+from django.db.models import UniqueConstraint
 
 
 class MyUserManager(UserManager):
@@ -18,15 +19,13 @@ class MyUserManager(UserManager):
 
 
 class User(AbstractUser):
-    # пользовательские роли
     USER = 'user'
-    SUBSCRIBED = 'subscribed'
     ADMIN = 'admin'
     ROLES = (
         (USER, 'user'),
-        (SUBSCRIBED, 'subscribed'),
         (ADMIN, 'admin')
     )
+
     role = models.CharField(
         verbose_name='Пользовательская роль',
         max_length=200,
@@ -34,39 +33,45 @@ class User(AbstractUser):
         default='user'
     )
 
+    email = models.EmailField(
+        'email',
+        null=False,
+        unique=True
+    )
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
+
     objects = MyUserManager()
 
     @property
     def is_admin(self):
         return self.role == self.ADMIN
 
-    @property
-    def is_subscribed(self):
-        return self.role == self.SUBSCRIBED
-
     class Meta:
-        ordering = ('id',)
+        verbose_name = 'Пользователь'
+        ordering = ['id']
+
+    def __str__(self):
+        return f'{self.username}'
 
 
 class Follow(models.Model):
-    """Класс для организации подписки на посты."""
-
-    user = models.ForeignKey(
-        User,
-        verbose_name='Пользователь',
-        on_delete=models.CASCADE,
-        related_name='follower',
-    )
-
     author = models.ForeignKey(
         User,
-        verbose_name='Автор',
         on_delete=models.CASCADE,
-        related_name='following',
+        verbose_name='Подписка',
+        related_name='following'
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name='Подписчик',
+        related_name='follower'
     )
 
     class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=['user', 'author'],
-                                    name='unique subscription')
-        ]
+        verbose_name = 'Подписки'
+        UniqueConstraint(fields=['author', 'user'], name='follow_unique')
+
+    def __str__(self):
+        return f"{self.user} -> {self.author}"

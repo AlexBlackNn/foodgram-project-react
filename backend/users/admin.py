@@ -1,13 +1,36 @@
 from django.contrib import admin
-from .models import Follow, User
-# Register your models here.
+from django.contrib.auth.admin import UserAdmin
 
-class FollowAdmin(admin.ModelAdmin):
-    """Настройка админки."""
-
-    list_display = ('user', 'author',)
-    list_editable = ('author',)
+from .models import User, Follow
 
 
-admin.site.register(Follow, FollowAdmin)
-admin.site.register(User)
+@admin.register(User)
+class UserAdmin(UserAdmin):
+    model = User
+    list_editable = (
+        'username',
+        'first_name',
+        'last_name',
+        'email',
+        'password',
+        'is_staff',
+        'is_active',
+        'role'
+    )
+    list_display = (
+        'id',
+        'username',
+        'first_name',
+        'last_name',
+        'email',
+        'password',
+        'is_staff',
+        'is_active',
+        'role'
+    )
+    ordering = ('username',)
+    search_fields = ('username', 'email',)
+    ordering = ('username',)
+
+
+admin.site.register(Follow)
