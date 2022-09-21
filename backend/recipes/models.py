@@ -119,7 +119,7 @@ class Favorite(models.Model):
         UniqueConstraint(fields=['recipe', 'user'], name='favorite_unique')
 
     def __str__(self):
-        return f"{self.user} has favorites: {self.recipe.name}"
+        return f"{self.user} -> {self.recipe.name}"
 
 
 class ShoppingList(models.Model):
