@@ -148,12 +148,12 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 6,
 }
-
-CORS_ORIGIN_ALLOW_ALL = False
-CORS_URLS_REGEX = r'^/api/.*$'
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-    'http://web:8000',
-]
-
+#
+# CORS_ORIGIN_ALLOW_ALL = False
+# CORS_URLS_REGEX = r'^/api/.*$'
+# CORS_ALLOWED_ORIGINS = [
+#     'http://localhost:3000',
+#     'http://web:8000',
+# ]
+#
 
