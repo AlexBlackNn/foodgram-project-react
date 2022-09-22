@@ -16,5 +16,6 @@ docker run -p 8000:8000 backend .
 
 docker-compose up --build --force-recreate
 
+docker exec -it 56155920acbd bash
 
 sudo service apache2 stop
