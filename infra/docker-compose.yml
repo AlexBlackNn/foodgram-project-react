@@ -1,7 +1,14 @@
 version: '3.3'
 services:
 
-  web:
+  db:
+    image: postgres:13.0-alpine
+    volumes:
+      - /var/lib/postgresql/data/
+    env_file:
+      - ./.env
+
+  backend:
     build:
       context: ../backend
     expose:
@@ -10,6 +17,10 @@ services:
     volumes:
       - static_value:/app/backend_static/
       - media_value:/app/backend_media/
+    depends_on:
+      - db
+    env_file:
+      - ./.env
 
   frontend:
     build:
@@ -17,17 +28,23 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ../frontend/:/app/result_build/
-
+    restart: always
 
   nginx:
     image: nginx:1.19.3
     ports:
       - "80:80"
     volumes:
+      - static_value:/var/html/static/
+      - media_value:/var/html/media/
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
       - ../frontend/build:/usr/share/nginx/html/
       - ../docs/:/usr/share/nginx/html/api/docs/
-
+    depends_on:
+      - backend
+      - frontend
+    restart: always
+      
 volumes:
   static_value:
   media_value:
