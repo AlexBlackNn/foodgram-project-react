@@ -11,12 +11,12 @@ services:
   backend:
     build:
       context: ../backend
-    expose:
-      - 8000
+    ports:
+      - 8000:8000
     restart: always
     volumes:
-      - static_value:/app/backend_static/
-      - media_value:/app/backend_media/
+      - static_value:/app/static/
+      - media_value:/app/media/
     depends_on:
       - db
     env_file:
