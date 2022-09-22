@@ -1,21 +1,43 @@
-# praktikum_new_diplom
+## Проект Foodgram
 
-пока запускаемся так:
+ 
+Cайт Foodgram, «Продуктовый помощник». На этом сервисе пользователи смогут публиковать рецепты, подписываться на публикации других пользователей, добавлять понравившиеся рецепты в список «Избранное», а перед походом в магазин скачивать сводный список продуктов, необходимых для приготовления одного или нескольких выбранных блюд.
 
-ФРОНТ 
+### Авторы проекта: 
 
-cd frontend
-npm run start 
+**[Чернов Алексей](https://github.com/AlexBlackNn) Backend**.
 
-Бэк 
+**[Yandex практикум](https://practicum.yandex.ru/) Frontend**.
 
-python manage.py runserver
+### Cписок используемых технологий:
+Django 
 
-docker build -t backend .
-docker run -p 8000:8000 backend .
+Django-rest-framework
 
-docker-compose up --build --force-recreate
+### Как запустить проект:
 
-docker exec -it 56155920acbd bash
+Клонировать репозиторий и перейти в папку foodgram-project-react и далее в папку infra
 
-sudo service apache2 stop
+```
+cd foodgram-project-react/infra
+```
+
+
+Запустить проект:
+
+```
+ docker-compose up --build --force-recreate
+
+```
+
+Создать суперпользователя для входа в админку: 
+
+```
+docker-compose exec backend python manage.py createsuperuser
+
+```
+Описание документации доступно по адресу :
+
+```
+http://localhost/api/docs/
+```
