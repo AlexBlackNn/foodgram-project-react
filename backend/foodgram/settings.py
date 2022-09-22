@@ -27,7 +27,6 @@ INSTALLED_APPS = [
     'users',
     'djoser',
 ]
-AUTH_USER_MODEL = 'users.User'
 
 DJOSER = {
     'LOGIN_FIELD': 'email',
@@ -94,6 +93,18 @@ DATABASES = {
     }
 }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': os.getenv('DB_ENGINE', default="django.db.backends.postgresql"),
+#         'NAME': os.getenv('DB_NAME', default="db.sqlite3"),
+#         'USER': os.getenv('POSTGRES_USER', default="user"),
+#         'PASSWORD': os.getenv('POSTGRES_PASSWORD', default="password"),
+#         'HOST': os.getenv('DB_HOST', default="localhost"),
+#         'PORT': os.getenv('DB_PORT', default="5432")
+#     }
+# }
+
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -121,7 +132,10 @@ USE_L10N = True
 USE_TZ = True
 
 
+AUTH_USER_MODEL = 'users.User'
+
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
