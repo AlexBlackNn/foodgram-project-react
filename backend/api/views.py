@@ -39,6 +39,13 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     search_fields = ('^name',)
     pagination_class = None
 
+class TagView(viewsets.ReadOnlyModelViewSet):
+    """Получить теги."""
+
+    serializer_class = TagSerializer
+    queryset = Tag.objects.all()
+    permission_classes = (AllowAny, )
+    pagination_class = None
 
 class RecipeViewSet(viewsets.ModelViewSet):
     """Работа с рецептами."""
@@ -147,12 +154,3 @@ class DownloadShoppingCart(APIView):
             'Content-Type: text/plain'
         )
         return response
-
-
-class TagView(viewsets.ReadOnlyModelViewSet):
-    """Получить теги."""
-
-    serializer_class = TagSerializer
-    queryset = Tag.objects.all()
-    permission_classes = (AllowAny, )
-    pagination_class = None

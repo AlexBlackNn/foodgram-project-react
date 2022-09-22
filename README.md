@@ -36,8 +36,14 @@ cd foodgram-project-react/infra
 docker-compose exec backend python manage.py createsuperuser
 
 ```
-Описание документации доступно по адресу :
+Описание документации доступно по адресу:
 
 ```
 http://localhost/api/docs/
 ```
+
+Выгрузить данные для инициализации БД:
+```
+docker-compose exec backend python manage.py dumpdata > init_database.json
+```
+

@@ -10,8 +10,12 @@ from .models import (
 )
 
 admin.site.register(Tag)
+admin.site.register(Favorite)
+admin.site.register(IngredientAmount)
+admin.site.register(ShoppingList)
 
 
+@admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
     list_display = (
         'id',
@@ -25,7 +29,7 @@ class IngredientAdmin(admin.ModelAdmin):
 class IngredientsInline(admin.TabularInline):
     model = Ingredient
 
-
+@admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     list_display = (
         'id',
@@ -48,9 +52,3 @@ class RecipeAdmin(admin.ModelAdmin):
 
     ingredients.short_description = 'Ингредиенты'
 
-
-admin.site.register(Recipe, RecipeAdmin)
-admin.site.register(Favorite)
-admin.site.register(Ingredient, IngredientAdmin)
-admin.site.register(IngredientAmount)
-admin.site.register(ShoppingList)

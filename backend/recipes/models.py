@@ -139,7 +139,7 @@ class ShoppingList(models.Model):
         verbose_name = 'Покупки'
 
     def __str__(self):
-        return f'In {self.user} shopping list: {self.recipe}'
+        return f'У пользователя {self.user} покупки: {self.recipe}'
 
 
 class IngredientAmount(models.Model):
