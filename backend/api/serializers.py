@@ -4,14 +4,8 @@ from django.core.files.base import ContentFile
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
-from recipes.models import (
-    Favorite,
-    Ingredient,
-    IngredientAmount,
-    Recipe,
-    ShoppingList,
-    Tag
-)
+from recipes.models import (Favorite, Ingredient, IngredientAmount, Recipe,
+                            ShoppingList, Tag)
 from users.models import User
 from users.serializers import UserSerializer
 
@@ -114,16 +108,15 @@ class RecipeSafeSerializer(serializers.ModelSerializer):
     def get_is_favorited(self, recipe):
         user = self.context['request'].user
         return (
-                user.is_authenticated
-                and Favorite.objects.filter(recipe=recipe, user=user).exists()
+            user.is_authenticated
+            and Favorite.objects.filter(recipe=recipe, user=user).exists()
         )
 
     def get_is_in_shopping_cart(self, recipe):
         user = self.context['request'].user
         return (
-                user.is_authenticated
-                and ShoppingList.objects.filter(recipe=recipe,
-                                                user=user).exists()
+            user.is_authenticated
+            and ShoppingList.objects.filter(recipe=recipe, user=user).exists()
         )
 
     def get_ingredients(self, recipe):
@@ -199,11 +192,10 @@ class RecipeFullSerializer(serializers.ModelSerializer):
         return recipe
 
     def to_representation(self, instance):
-        data = RecipeSafeSerializer(
+        return RecipeSafeSerializer(
             instance,
             context={'request': self.context.get('request')}
         ).data
-        return data
 
 
 class FavoriteShoppingWriteSerializer(serializers.ModelSerializer):

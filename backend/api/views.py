@@ -1,12 +1,13 @@
 from django.shortcuts import HttpResponse, get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from recipes.models import (Favorite, Ingredient, IngredientAmount, Recipe,
-                            ShoppingList, Tag)
 from rest_framework import filters, status, viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import SAFE_METHODS, AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from recipes.models import (Favorite, Ingredient, IngredientAmount, Recipe,
+                            ShoppingList, Tag)
 
 from .filters import RecipeFilter
 from .permissions import IsAuthorOrAdministratorOrReadOnly
@@ -140,8 +141,7 @@ class DownloadShoppingCart(APIView):
             resulted_list.append(f"{num}) {item}:{value['amount']}"
                                  f"{value['measurement_unit']}\n")
 
-        response = HttpResponse(
+        return HttpResponse(
             resulted_list,
             'Content-Type: text/plain'
         )
-        return response
