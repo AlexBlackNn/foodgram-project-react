@@ -23,6 +23,7 @@ class IngredientAdmin(admin.ModelAdmin):
 class IngredientsInline(admin.TabularInline):
     model = Ingredient
 
+
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     list_display = (
@@ -45,4 +46,3 @@ class RecipeAdmin(admin.ModelAdmin):
         return list(obj.ingredients.all())
 
     ingredients.short_description = 'Ингредиенты'
-

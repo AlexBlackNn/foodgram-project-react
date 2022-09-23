@@ -107,15 +107,16 @@ class RecipeSafeSerializer(serializers.ModelSerializer):
     def get_is_favorited(self, recipe):
         user = self.context['request'].user
         return (
-            user.is_authenticated
-            and Favorite.objects.filter(recipe=recipe, user=user).exists()
+                user.is_authenticated
+                and Favorite.objects.filter(recipe=recipe, user=user).exists()
         )
 
     def get_is_in_shopping_cart(self, recipe):
         user = self.context['request'].user
         return (
-            user.is_authenticated
-            and ShoppingList.objects.filter(recipe=recipe, user=user).exists()
+                user.is_authenticated
+                and ShoppingList.objects.filter(recipe=recipe,
+                                                user=user).exists()
         )
 
     def get_ingredients(self, recipe):
@@ -213,7 +214,6 @@ class FavoriteShoppingWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShoppingList
         fields = ('user', 'recipe')
-
 
 
 class ShoppingListWriteSerializer(FavoriteShoppingWriteSerializer):

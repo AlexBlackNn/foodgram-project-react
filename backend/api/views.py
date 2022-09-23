@@ -27,13 +27,15 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     search_fields = ('^name',)
     pagination_class = None
 
+
 class TagView(viewsets.ReadOnlyModelViewSet):
     """Получить теги."""
 
     serializer_class = TagSerializer
     queryset = Tag.objects.all()
-    permission_classes = (AllowAny, )
+    permission_classes = (AllowAny,)
     pagination_class = None
+
 
 class RecipeViewSet(viewsets.ModelViewSet):
     """Работа с рецептами."""
@@ -51,6 +53,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         if self.request.method in SAFE_METHODS:
             return RecipeSafeSerializer
         return RecipeFullSerializer
+
 
 class FavoriteView(APIView):
     """Добавление в Избранное и удаление из него."""

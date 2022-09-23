@@ -30,4 +30,3 @@ class RecipeFilter(filters.FilterSet):
         if value:
             return queryset.filter(purchases__user=user)
         return Recipe.objects.all()
-

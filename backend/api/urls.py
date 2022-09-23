@@ -15,4 +15,3 @@ urlpatterns = [
     path('recipes/<int:recipe_id>/favorite/', FavoriteView.as_view()),
     path('recipes/<int:recipe_id>/shopping_cart/', ShoppingView.as_view()),
 ]
-
