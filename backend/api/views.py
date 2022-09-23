@@ -1,31 +1,19 @@
 from django.shortcuts import HttpResponse, get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import status, viewsets
+from recipes.models import (Favorite, Ingredient, IngredientAmount, Recipe,
+                            ShoppingList, Tag)
+from rest_framework import filters, status, viewsets
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import IsAuthenticated, AllowAny, SAFE_METHODS
+from rest_framework.permissions import SAFE_METHODS, AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework import filters
 
 from .filters import RecipeFilter
-from recipes.models import (
-    Favorite,
-    IngredientAmount,
-    Ingredient,
-    Recipe,
-    ShoppingList,
-    Tag
-)
 from .permissions import IsAuthorOrAdministratorOrReadOnly
-from .serializers import (
-    FavoriteWriteSerializer,
-    FavoriteShoppingReturnSerializer,
-    RecipeFullSerializer,
-    RecipeSafeSerializer,
-    IngredientSerializer,
-    TagSerializer,
-    ShoppingListWriteSerializer,
-)
+from .serializers import (FavoriteShoppingReturnSerializer,
+                          FavoriteWriteSerializer, IngredientSerializer,
+                          RecipeFullSerializer, RecipeSafeSerializer,
+                          ShoppingListWriteSerializer, TagSerializer)
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):

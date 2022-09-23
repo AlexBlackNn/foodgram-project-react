@@ -1,20 +1,17 @@
 from django.contrib.auth.hashers import check_password
 from django.shortcuts import get_object_or_404
-from rest_framework import status, viewsets, generics
+from rest_framework import generics, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import (
-    AllowAny,
-    IsAuthenticated
-)
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import User, Follow
+from .models import Follow, User
 from .serializers import (
     FollowSubscriptionSerializer,
+    PasswordSerializer,
     UserFollowSerializer,
-    UserSerializer,
-    PasswordSerializer
+    UserSerializer
 )
 
 
