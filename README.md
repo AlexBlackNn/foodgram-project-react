@@ -42,8 +42,11 @@ docker-compose exec backend python manage.py createsuperuser
 http://localhost/api/docs/
 ```
 
-Выгрузить данные для инициализации БД:
+Выгрузить данные из БД для сохранения:
 ```
 docker-compose exec backend python manage.py dumpdata > init_database.json
 ```
-
+Загрузить сохраненные данные для инициализации БД:
+```
+sudo docker-compose exec backend python manage.py loaddata init_database.json
+```
