@@ -104,7 +104,7 @@ jobs:
           #остановка всех контейнеров
           sudo docker-compose down
           #запуск
-          sudo docker-compose up --build --force-recreate
+          sudo docker-compose up -d --build --force-recreate
 
 
   send_message:
