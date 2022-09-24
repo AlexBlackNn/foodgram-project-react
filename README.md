@@ -46,6 +46,7 @@ http://localhost/api/docs/
 ```
 docker-compose exec backend python manage.py dumpdata > init_database.json
 ```
+
 Загрузить сохраненные данные для инициализации БД:
 ```
 sudo docker-compose exec backend python manage.py loaddata init_database.json
