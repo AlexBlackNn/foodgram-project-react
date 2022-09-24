@@ -1,3 +1,4 @@
+from django.db.models import Sum
 from django.shortcuts import HttpResponse, get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, status, viewsets
@@ -15,6 +16,7 @@ from .serializers import (FavoriteShoppingReturnSerializer,
                           FavoriteWriteSerializer, IngredientSerializer,
                           RecipeFullSerializer, RecipeSafeSerializer,
                           ShoppingListWriteSerializer, TagSerializer)
+from .services import form_shopping_list
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
@@ -118,28 +120,11 @@ class DownloadShoppingCart(APIView):
     permission_classes = [IsAuthenticated, ]
 
     def get(self, request):
-        shopping_list = {}
-        ingredients = IngredientAmount.objects.filter(
+        ingredient_and_amount = IngredientAmount.objects.filter(
             recipe__purchases__user=request.user
-        )
-        for ingredient in ingredients:
-            amount = ingredient.amount
-            name = ingredient.ingredient.name
-            measurement_unit = ingredient.ingredient.measurement_unit
+        ).values('ingredient__name').annotate(ingredient_amount=Sum('amount'))
 
-            shopping_list.setdefault(name, {
-                'measurement_unit': measurement_unit,
-                'amount': amount
-            })
-
-            shopping_list[name]['amount'] += amount
-
-        resulted_list = []
-        for num, data in enumerate(shopping_list.items(), 1):
-            item = data[0]
-            value = data[1]
-            resulted_list.append(f"{num}) {item}:{value['amount']}"
-                                 f"{value['measurement_unit']}\n")
+        resulted_list = form_shopping_list(ingredient_and_amount)
 
         return HttpResponse(
             resulted_list,
