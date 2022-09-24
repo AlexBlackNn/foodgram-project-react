@@ -7,7 +7,7 @@ from users.models import User
 
 class Tag(models.Model):
     name = models.CharField(
-        max_length=200,
+        max_length=20,
         verbose_name='Название тега',
         null=False,
         unique=True
@@ -26,7 +26,8 @@ class Tag(models.Model):
 
     class Meta:
         verbose_name = 'Тэг'
-
+        verbose_name_plural = 'Тэги'
+        
     def __str__(self):
         return self.name
 
@@ -40,7 +41,7 @@ class Ingredient(models.Model):
         null=False
     )
     measurement_unit = models.CharField(
-        max_length=200,
+        max_length=20,
         verbose_name='Единицы измерения',
         null=False
     )
@@ -96,6 +97,7 @@ class Recipe(models.Model):
 
     class Meta:
         verbose_name = 'Рецепт'
+        verbose_name_plural = 'Рецепты'
         ordering = ['-pub_date']
 
     def __str__(self):
@@ -116,10 +118,11 @@ class Favorite(models.Model):
 
     class Meta:
         verbose_name = 'Избранное'
+        verbose_name_plural = 'Избранное'
         UniqueConstraint(fields=['recipe', 'user'], name='favorite_unique')
 
     def __str__(self):
-        return f"{self.user} -> {self.recipe.name}"
+        return f'{self.user} -> {self.recipe.name}'
 
 
 class ShoppingList(models.Model):
@@ -136,7 +139,8 @@ class ShoppingList(models.Model):
     )
 
     class Meta:
-        verbose_name = 'Покупки'
+        verbose_name = 'Покупка'
+        verbose_name_plural = 'Покупки'
 
     def __str__(self):
         return f'У пользователя {self.user} покупки: {self.recipe}'
@@ -162,7 +166,8 @@ class IngredientAmount(models.Model):
     )
 
     class Meta:
-        verbose_name = 'Количество'
+        verbose_name = 'Количество ингредиента'
+        verbose_name_plural = 'Количество ингредиентов'
 
     def __str__(self):
         return f'{self.ingredient} in {self.recipe}'

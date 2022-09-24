@@ -1,6 +1,3 @@
-import base64
-
-from django.core.files.base import ContentFile
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
@@ -8,6 +5,7 @@ from recipes.models import (Favorite, Ingredient, IngredientAmount, Recipe,
                             ShoppingList, Tag)
 from users.models import User
 from users.serializers import UserSerializer
+from .fields import Base64ImageField
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -18,17 +16,6 @@ class TagSerializer(serializers.ModelSerializer):
         fields = ('__all__')
         lookup_field = 'id'
         extra_kwargs = {'url': {'lookup_field': 'id'}}
-
-
-class Base64ImageField(serializers.ImageField):
-    """Для работы с изобажениями (перевод в base64)."""
-
-    def to_internal_value(self, data):
-        if isinstance(data, str) and data.startswith('data:image'):
-            format_, imgstr = data.split(';base64,')
-            ext = format_.split('/')[-1]
-            data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
-        return super().to_internal_value(data)
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -108,15 +95,16 @@ class RecipeSafeSerializer(serializers.ModelSerializer):
     def get_is_favorited(self, recipe):
         user = self.context['request'].user
         return (
-            user.is_authenticated
-            and Favorite.objects.filter(recipe=recipe, user=user).exists()
+                user.is_authenticated
+                and Favorite.objects.filter(recipe=recipe, user=user).exists()
         )
 
     def get_is_in_shopping_cart(self, recipe):
         user = self.context['request'].user
         return (
-            user.is_authenticated
-            and ShoppingList.objects.filter(recipe=recipe, user=user).exists()
+                user.is_authenticated
+                and ShoppingList.objects.filter(recipe=recipe,
+                                                user=user).exists()
         )
 
     def get_ingredients(self, recipe):
@@ -148,6 +136,14 @@ class RecipeFullSerializer(serializers.ModelSerializer):
             'cooking_time'
         )
 
+    @staticmethod
+    def __ingredient_amount_bulk_create(recipe, ingredients_data):
+        IngredientAmount.objects.bulk_create([IngredientAmount(
+            ingredient=ingredient['ingredient'],
+            recipe=recipe,
+            amount=ingredient['amount']
+        ) for ingredient in ingredients_data])
+
     def create(self, validated_data):
         # Делаем селекцию данных
         user = self.context['request'].user
@@ -159,11 +155,7 @@ class RecipeFullSerializer(serializers.ModelSerializer):
         # Добавляем к нему теги
         recipe.tags.set(tags_data)
         # создаем объекты IngredientAmount
-        IngredientAmount.objects.bulk_create([IngredientAmount(
-            ingredient=ingredient['ingredient'],
-            recipe=recipe,
-            amount=ingredient['amount']
-        ) for ingredient in ingredients_data])
+        self.__ingredient_amount_bulk_create(recipe, ingredients_data)
         return recipe
 
     def update(self, recipe, validated_data):
@@ -174,11 +166,7 @@ class RecipeFullSerializer(serializers.ModelSerializer):
         # Удаляем старые объекты
         IngredientAmount.objects.filter(recipe=recipe).delete()
         # Создаем новые объекты
-        IngredientAmount.objects.bulk_create([IngredientAmount(
-            ingredient=ingredient['ingredient'],
-            recipe=recipe,
-            amount=ingredient['amount']
-        ) for ingredient in ingredients_data])
+        self.__ingredient_amount_bulk_create(recipe, ingredients_data)
 
         recipe.name = validated_data.pop('name')
         recipe.text = validated_data.pop('text')
