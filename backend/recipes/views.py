@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import (Favorite, Ingredient, IngredientAmount, Recipe,
-                            ShoppingList, Tag)
+                     ShoppingList, Tag)
 from .filters import RecipeFilter
 from .permissions import IsAuthorOrAdministratorOrReadOnly
 from .serializers import (FavoriteShoppingReturnSerializer,
