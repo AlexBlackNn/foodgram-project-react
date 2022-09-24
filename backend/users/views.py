@@ -7,12 +7,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Follow, User
-from .serializers import (
-    FollowSubscriptionSerializer,
-    PasswordSerializer,
-    UserFollowSerializer,
-    UserSerializer
-)
+from .serializers import (FollowSubscriptionSerializer, PasswordSerializer,
+                          UserFollowSerializer, UserSerializer)
 
 
 class UserViewSet(viewsets.ModelViewSet):

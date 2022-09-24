@@ -6,9 +6,9 @@ from rest_framework.permissions import SAFE_METHODS, AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from .filters import RecipeFilter
 from .models import (Favorite, Ingredient, IngredientAmount, Recipe,
                      ShoppingList, Tag)
-from .filters import RecipeFilter
 from .permissions import IsAuthorOrAdministratorOrReadOnly
 from .serializers import (FavoriteShoppingReturnSerializer,
                           FavoriteWriteSerializer, IngredientSerializer,

@@ -1,11 +1,11 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
-from recipes.models import (Favorite, Ingredient, IngredientAmount, Recipe,
-                            ShoppingList, Tag)
 from users.models import User
 from users.serializers import UserSerializer
 from .fields import Base64ImageField
+from .models import (Favorite, Ingredient, IngredientAmount, Recipe,
+                     ShoppingList, Tag)
 
 
 class TagSerializer(serializers.ModelSerializer):
