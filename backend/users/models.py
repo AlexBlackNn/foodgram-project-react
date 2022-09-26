@@ -1,20 +1,7 @@
-from django.contrib.auth.models import AbstractUser, UserManager
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-
-class MyUserManager(UserManager):
-    """Для создания пользователя и суперпользователя."""
-
-    def create_user(self, username, email, password, **extra_fields):
-        return super().create_user(
-            username, email=email, password=password, **extra_fields
-        )
-
-    def create_superuser(
-            self, username, email, password, role='admin', **extra_fields):
-        return super().create_superuser(
-            username, email, password, role='admin', **extra_fields
-        )
+from .managers import MyUserManager
 
 
 class User(AbstractUser):
@@ -72,7 +59,12 @@ class Follow(models.Model):
     class Meta:
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
-        unique_together = ('author', 'user',)
+        constraints = [
+            models.UniqueConstraint(
+                fields=['author', 'user'],
+                name='follow_author_user_unique'
+            )
+        ]
 
     def __str__(self):
         return f'{self.user} -> {self.author}'

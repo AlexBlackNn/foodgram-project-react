@@ -3,7 +3,6 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
 from recipes.models import Recipe
-
 from .models import Follow, User
 
 # количество отображаемых блюд
@@ -91,8 +90,11 @@ class FollowSubscriptionSerializer(serializers.ModelSerializer):
         )
 
     def get_recipes(self, user):
-        recipes = user.recipes.all()[:MY_SUBSCRIPTION_LIMIT_DISHES]
         request = self.context.get('request')
+        recipes_limit = request.query_params.get('recipes_limit')
+        recipes = user.recipes.all()
+        if recipes_limit:
+            recipes = recipes[:int(recipes_limit)]
         return RecipeImagePathSerializer(
             recipes,
             many=True,

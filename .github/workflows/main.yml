@@ -24,18 +24,11 @@ jobs:
         # установка зависимостей
         pip install -r requirements.txt 
 
-    - name: Test with flake8 and django tests
+    - name: Test with flake8
       run: |
         # запуск проверки проекта по flake8
         cd backend
         python -m flake8
-#        # перейти в папку, содержащую manage.py —
-#        #<корневая_папка_infra_actions>/<папка_проекта>/manage.py
-#        cd backend/
-#        # запустить написанные разработчиком тесты
-#        python manage.py test
-#        echo ${{ secrets.DOCKER_USERNAME }}
-#        echo ${{ secrets.DOCKER_PASSWORD }}
 
   build_backend_and_push_to_docker_hub:
     name: Push Docker image to Docker Hub

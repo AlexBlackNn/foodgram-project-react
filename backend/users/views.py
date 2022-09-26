@@ -6,8 +6,12 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from .models import Follow, User
-from .serializers import (FollowSubscriptionSerializer, PasswordSerializer,
-                          UserFollowSerializer, UserSerializer)
+from .serializers import (
+    FollowSubscriptionSerializer,
+    PasswordSerializer,
+    UserFollowSerializer,
+    UserSerializer
+)
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -60,10 +64,9 @@ class UserViewSet(viewsets.ModelViewSet):
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            author = get_object_or_404(User, id=following_id)
-            Follow.objects.filter(user=request.user, author=author).delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+        author = get_object_or_404(User, id=following_id)
+        Follow.objects.filter(user=request.user, author=author).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
         detail=False,

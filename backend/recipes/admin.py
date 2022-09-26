@@ -1,7 +1,14 @@
 from django.contrib import admin
+from django.db.models import Sum
 
-from .models import (Favorite, Ingredient, IngredientAmount, Recipe,
-                     ShoppingList, Tag)
+from .models import (
+    Favorite,
+    Ingredient,
+    IngredientAmount,
+    Recipe,
+    ShoppingList,
+    Tag
+)
 
 admin.site.register(Tag)
 admin.site.register(Favorite)
@@ -32,17 +39,38 @@ class RecipeAdmin(admin.ModelAdmin):
         'name',
         'image',
         'text',
-        'is_favorited',
-        'ingredients',
+        'users_quantity_who_marked_recipy_as_favorite',
+        'get_ingredients',
     )
     search_fields = ('author', 'name')
     list_filter = ('author', 'name', 'tags')
     empty_value_display = '-пусто-'
 
-    def is_favorited(self, obj):
+    def users_quantity_who_marked_recipy_as_favorite(self, obj):
         return obj.favorites.count()
 
-    def ingredients(self, obj):
-        return list(obj.ingredients.all())
+    users_quantity_who_marked_recipy_as_favorite.short_description = (
+        'Количество пользователей, добавившее рецепт в избранное'
+    )
 
-    ingredients.short_description = 'Ингредиенты'
+    def get_ingredients(self, obj):
+        queury_set = (obj.recipes_ingredients_list.all().values(
+            'ingredient__name',
+            'ingredient__measurement_unit',
+        ).annotate(
+            ingredient_amount=Sum('amount')
+        ))
+        ingredient_description = ''
+        for item in queury_set:
+            ingredient_row = (
+                f'{item["ingredient__name"]}'
+                f' {item["ingredient_amount"]}'
+                f' {item["ingredient__measurement_unit"]}'
+                '\n'
+            )
+            ingredient_description += ingredient_row
+        return ingredient_description
+
+    get_ingredients.short_description = (
+        "Ингредиенты"
+    )

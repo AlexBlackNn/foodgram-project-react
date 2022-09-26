@@ -5,8 +5,14 @@ from users.models import User
 from users.serializers import UserSerializer
 
 from .fields import Base64ImageField
-from .models import (Favorite, Ingredient, IngredientAmount, Recipe,
-                     ShoppingList, Tag)
+from .models import (
+    Favorite,
+    Ingredient,
+    IngredientAmount,
+    Recipe,
+    ShoppingList,
+    Tag
+)
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -178,6 +184,17 @@ class RecipeFullSerializer(serializers.ModelSerializer):
         recipe.save()
         recipe.tags.set(tags_data)
         return recipe
+
+    def validate(self, data):
+        ingredients = self.initial_data.get('ingredients')
+        for ingredient in ingredients:
+            if int(ingredient['amount']) <= 0:
+                raise serializers.ValidationError({
+                    'cooking_time': (
+                        'Убедитесь, что это значение больше 0.'
+                    )
+                })
+        return data
 
     def to_representation(self, instance):
         return RecipeSafeSerializer(
