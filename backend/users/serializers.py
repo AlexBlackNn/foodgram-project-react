@@ -5,9 +5,6 @@ from rest_framework.validators import UniqueTogetherValidator
 from recipes.models import Recipe
 from .models import Follow, User
 
-# количество отображаемых блюд
-MY_SUBSCRIPTION_LIMIT_DISHES = 3
-
 
 class UserFollowSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(

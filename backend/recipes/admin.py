@@ -39,17 +39,17 @@ class RecipeAdmin(admin.ModelAdmin):
         'name',
         'image',
         'text',
-        'users_quantity_who_marked_recipy_as_favorite',
+        'get_quantity_the_recipy_is_favorite',
         'get_ingredients',
     )
     search_fields = ('author', 'name')
     list_filter = ('author', 'name', 'tags')
     empty_value_display = '-пусто-'
 
-    def users_quantity_who_marked_recipy_as_favorite(self, obj):
+    def get_quantity_the_recipy_is_favorite(self, obj):
         return obj.favorites.count()
 
-    users_quantity_who_marked_recipy_as_favorite.short_description = (
+    get_quantity_the_recipy_is_favorite.short_description = (
         'Количество пользователей, добавившее рецепт в избранное'
     )
 
@@ -72,5 +72,5 @@ class RecipeAdmin(admin.ModelAdmin):
         return ingredient_description
 
     get_ingredients.short_description = (
-        "Ингредиенты"
+        'Ингредиенты'
     )
