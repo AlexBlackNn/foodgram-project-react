@@ -190,7 +190,7 @@ class RecipeFullSerializer(serializers.ModelSerializer):
         for ingredient in ingredients:
             if int(ingredient['amount']) <= 0:
                 raise serializers.ValidationError({
-                    'cooking_time': (
+                    f'ingredients': (
                         'Убедитесь, что это значение больше 0.'
                     )
                 })
